@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template
 import gdata.analytics.client
-
 import os
-from ca import CA
 import pandas as pd
 # import scipy.stats
 
