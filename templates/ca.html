@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>对应分析</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://timdream.org/wordcloud2.js/src/wordcloud2.js"></script>
+    <style>
+      .container {
+        max-width: 1000px;
+        margin-left: 20%;
+        margin-right: 20%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <div class="page-header">
+            <h1>给定列联表生成对应分析图</h1>
+        </div>
+            <h2>输入存放列联表的URL(utf8编码的csv)</h2>
+            <p>
+              <a href="https://gist.githubusercontent.com/okomestudio/c710906f3662138f0417/raw/fashion_brands.csv">样例数据</a>
+            </p>
+          <form role="form" method="POST" action="/ca">
+            <div class="form-group">
+              <input type="text" name="url" class="form-control" id="url-box" placeholder="Enter URL..." style="max-width: 300px;" value='http://cloga.info/files/catest.csv'>
+            <button type="submit" class="btn btn-default">提交</button>
+          </form>
+          <h2>或者从本地上传CSV文件（请保证格式与样例数据一致，utf编码）</h2>
+            <p>
+          <form role="form" method="POST" action="/ca" enctype="multipart/form-data" style="max-width: 300px;">
+            <div class="form-group">
+              <input type="file" name="file" class="form-control" id="file-box">
+            <button type="submit" class="btn btn-default">提交</button>
+          </form>
+          </p>
+          {% for error in errors %}
+            <h4>{{ error }}</h4>
+          {% endfor %}
+          <br>
+          {% if results %}
+            <h2>列联表内容</h2>
+            </br>
+            {{ results['html'] |safe }}<br>
+            <h2>纬度的惯性值</h2>
+            <img  src="{{ results['eigenvalue_path'] }}">
+            <!--
+            <h2>卡方的p值</h2>
+            卡方的p值为: {{ results['p_value'] }}
+            !-->
+            <h2>对应分析图</h2>
+            <img  src="{{ results['graph_path'] }}">
+          {% endif %}
+    </div>
+    <br><br>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Google Tag Manager -->
+    <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-7VF4"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-7VF4');</script>
+    <!-- End Google Tag Manager -->
+
+  </body>
+</html>
