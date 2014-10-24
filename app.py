@@ -3,15 +3,8 @@ from flask import Flask, render_template
 import gdata.analytics.client
 
 import os
-import requests
-import re
-import jieba
-import collections
 from ca import CA
 import pandas as pd
-import matplotlib.pyplot as plt
-import random
-import tempfile
 # import scipy.stats
 
 
