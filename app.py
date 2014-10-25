@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import os
 import webbrowser
 import os
@@ -23,6 +23,7 @@ import sys
 client_id = '239823730922-72pfrs8hjs640ptrb1kecinogffhhdh9.apps.googleusercontent.com'  # 请替换为你的Client_id
 client_secret = '1fhPtLWXGjp9qgzAib28SThi'  # 请替换为你的Client_secret
 redirect_uri = 'http://gareport.cloga.info/oauth2callback'
+# redirect_uri = 'http://127.0.0.1:5000/oauth2callback'
 auth_server = 'https://accounts.google.com/o/oauth2/auth'
 token_uri = 'https://accounts.google.com/o/oauth2/token'
 scope = 'https://www.googleapis.com/auth/analytics.readonly'
@@ -177,20 +178,19 @@ def get_oauth():
     auth_uri = auth_server + '?scope=' + scope + '&state=%2Fprofile&redirect_uri=' + redirect_uri + \
         '&response_type=code&client_id=' + client_id + \
         '&approval_prompt=force&access_type=offline'
-    webbrowser.open(auth_uri)
-    return u'进行认证:\n' + auth_uri
+    return redirect(auth_uri)
 
 
 @app.route('/oauth2callback', methods=['GET', 'POST'])
 def get_token():
     ##like 4/JPxXb-9pIYgDplpl219vZsrsnosh.EkSM4OsIb8MdgrKXntQAax3otm0OegI
-    if request.get('error',''):
-        return request.get('error','')
+    if request.args.get('error',''):
+        return request.args.get('error','')
     body = urllib.urlencode({
         'grant_type': 'authorization_code',
         'client_id': client_id,
         'client_secret': client_secret,
-        'code': request.get('code',''),
+        'code': request.args.get('code',''),
         'redirect_uri': redirect_uri,
         'scope': scope,
     })
