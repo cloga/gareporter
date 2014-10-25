@@ -8,47 +8,13 @@ import pandas as pd
 
 #-*- coding:utf-8 -*-
 
+import sys
 
+# import the Auth Helper class
+import hello_analytics_api_v3_auth
 
-EMAIL = 'cloga0216@gmail.com'
-PWD = 'dragon83'
-SOURCE_APP_NAME = 'Cloga_GA'
-
-my_client = gdata.analytics.client.AnalyticsClient(source=SOURCE_APP_NAME)
-
-auth_token = my_client.client_login(
-    EMAIL,
-    PWD,
-    source=SOURCE_APP_NAME,
-    service=my_client.auth_service,
-    account_type='GOOGLE'
-)
-
-token = my_client.auth_token
-
-data_query = gdata.analytics.client.DataFeedQuery({
-    'ids': 'ga:36050032',
-    'dimensions': 'ga:source',
-    'metrics': 'ga:pageviews',
-    'start-date': '2013-05-18',
-    'end-date': '2014-10-10',
-    'prettyprint': 'true'
-})
-feed = my_client.GetDataFeed(data_query)
-
-results = []
-
-for entry in feed.entry:
-    result = {}
-    for dim in entry.dimension:
-        result[dim.name] = dim.value
-    for met in entry.metric:
-        result[met.name] = met.value
-    results.append(result)
-df = pd.DataFrame(results)
-
-# print result
-
+from apiclient.errors import HttpError
+from oauth2client.client import AccessTokenRefreshError
 
 
 #######################
@@ -60,7 +26,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return df.to_html()
+    service = hello_analytics_api_v3_auth.initialize_service()
+    profile_id = get_first_profile_id(service)
+    return profile_id
 
 if __name__ == '__main__':
     app.run(debug=True)
