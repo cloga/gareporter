@@ -177,33 +177,33 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/oauth', methods=['GET', 'POST'])
-def get_oauth():
-    auth_uri = auth_server + '?scope=' + scope + '&state=%2Fprofile&redirect_uri=' + redirect_uri + \
-        '&response_type=code&client_id=' + client_id + \
-        '&approval_prompt=force&access_type=offline'
-    print u'进行认证,浏览器打开:\n' + auth_uri
-    webbrowser.open(auth_uri)
+# @app.route('/oauth', methods=['GET', 'POST'])
+# def get_oauth():
+#     auth_uri = auth_server + '?scope=' + scope + '&state=%2Fprofile&redirect_uri=' + redirect_uri + \
+#         '&response_type=code&client_id=' + client_id + \
+#         '&approval_prompt=force&access_type=offline'
+#     print u'进行认证:\n' + auth_uri
+#     webbrowser.open(auth_uri)
 
-@app.route('/oauth2callback', methods=['GET', 'POST'])
-def get_token():
-    ##like 4/JPxXb-9pIYgDplpl219vZsrsnosh.EkSM4OsIb8MdgrKXntQAax3otm0OegI
-    if request.get('error',''):
-        return request.get('error','')
-    body = urllib.urlencode({
-        'grant_type': 'authorization_code',
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'code': request.get('code',''),
-        'redirect_uri': redirect_uri,
-        'scope': scope,
-    })
-    headers = {'content-type': 'application/x-www-form-urlencoded', }
-    content = http.request(
-        token_uri, method='POST', body=body, headers=headers)
-    access_token = json.loads(content[1])['access_token']
-    refresh_token = json.loads(content[1])['refresh_token']
-    ##access_token有效期为一小时，超时需使用refresh_token重新获得
-    return access_token, refresh_token
+# @app.route('/oauth2callback', methods=['GET', 'POST'])
+# def get_token():
+#     ##like 4/JPxXb-9pIYgDplpl219vZsrsnosh.EkSM4OsIb8MdgrKXntQAax3otm0OegI
+#     if request.get('error',''):
+#         return request.get('error','')
+#     body = urllib.urlencode({
+#         'grant_type': 'authorization_code',
+#         'client_id': client_id,
+#         'client_secret': client_secret,
+#         'code': request.get('code',''),
+#         'redirect_uri': redirect_uri,
+#         'scope': scope,
+#     })
+#     headers = {'content-type': 'application/x-www-form-urlencoded', }
+#     content = http.request(
+#         token_uri, method='POST', body=body, headers=headers)
+#     access_token = json.loads(content[1])['access_token']
+#     refresh_token = json.loads(content[1])['refresh_token']
+#     ##access_token有效期为一小时，超时需使用refresh_token重新获得
+#     return access_token, refresh_token
 if __name__ == '__main__':
     app.run(debug=True)
