@@ -45,11 +45,10 @@ for entry in feed.entry:
     for met in entry.metric:
         result[met.name] = met.value
     results.append(result)
-pd.DataFrame(results)
+df = pd.DataFrame(results)
 
 # print result
-for i in result:
-    print '浏览量:' + i[1]
+
 
 
 #######################
@@ -61,7 +60,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return 'Hello World!'
+    return df.to_html()
 
 if __name__ == '__main__':
     app.run(debug=True)
