@@ -175,7 +175,8 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    # return render_template('index.html')
+    return 'hhh'
 
 # @app.route('/oauth', methods=['GET', 'POST'])
 # def get_oauth():
@@ -184,6 +185,7 @@ def index():
 #         '&approval_prompt=force&access_type=offline'
 #     print u'进行认证:\n' + auth_uri
 #     webbrowser.open(auth_uri)
+
 
 # @app.route('/oauth2callback', methods=['GET', 'POST'])
 # def get_token():
