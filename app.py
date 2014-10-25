@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request
-import gdata.analytics.client
 import os
 import webbrowser
 import os
