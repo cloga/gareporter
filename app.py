@@ -11,7 +11,6 @@ import httplib2
 import json
 import pandas as pd
 import sys
-import requests
 
 
 
