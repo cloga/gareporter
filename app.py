@@ -2,7 +2,7 @@
 from flask import Flask, render_template
 import gdata.analytics.client
 import os
-import pandas as pd
+# import pandas as pd
 # import scipy.stats
 
 
