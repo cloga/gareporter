@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, redirect
-import os
-import webbrowser
+from flask import Flask
+from flask import render_template
+from flask import request
+from flask import redirect
+from flask import session
+from flask import url_for
 import os
 import collections
 import urllib
@@ -11,14 +14,9 @@ import json
 import pandas as pd
 import sys
 
-
-
-
 ##Google Oauth
 # 需增加token持久化及刷新的机制
 # 需增加出现抽样后，将粒度变小的逻辑
-
-
 
 client_id = '239823730922-72pfrs8hjs640ptrb1kecinogffhhdh9.apps.googleusercontent.com'  # 请替换为你的Client_id
 client_secret = '1fhPtLWXGjp9qgzAib28SThi'  # 请替换为你的Client_secret
@@ -29,6 +27,10 @@ token_uri = 'https://accounts.google.com/o/oauth2/token'
 scope = 'https://www.googleapis.com/auth/analytics.readonly'
 data_uri = 'https://www.googleapis.com/analytics/v3/data/ga'
 mcf_uri = 'https://www.googleapis.com/analytics/v3/data/mcf'
+
+# proxy = httplib2.ProxyInfo(3, '127.0.0.1', 8087)
+# http = httplib2.Http(
+#     proxy_info=proxy, disable_ssl_certificate_validation=True)
 
 http = httplib2.Http(disable_ssl_certificate_validation=True)
 
@@ -149,20 +151,6 @@ def write_mcf_data(headers, rows, name='mcf_data'):
         output_dic(f, dic_ln)
         print "MCF Data has been writen!"
 
-# access_token, refresh_token = get_token()
-# profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
-# args = 'access_token=' + str(access_token) +\
-#        '&ids=' + profile_id +\
-#        '&start-date=' + '2012-09-03' +\
-#        '&end-date=' + '2013-01-15' +\
-#        '&metrics=' + 'mcf:totalConversions,mcf:totalConversionValue' +\
-#        '&dimensions=' + 'mcf:basicChannelGroupingPath' +\
-#        '&max-results=' + '10000'
-# headers, rows = get_mcf_data(args)
-# write_mcf_data(headers, rows)
-# print 'complete'
-
-
 #######################
 #### configuration ####
 #######################
@@ -175,11 +163,9 @@ def index():
 
 @app.route('/oauth', methods=['GET', 'POST'])
 def get_oauth():
-    auth_uri = auth_server + '?scope=' + scope + '&state=%2Fprofile&redirect_uri=' + redirect_uri + \
-        '&response_type=code&client_id=' + client_id + \
-        '&approval_prompt=force&access_type=offline'
+    auth_uri = auth_server + '?scope=' + scope + '&state=/profile&redirect_uri=' + redirect_uri + \
+        '&response_type=code&client_id=' + client_id
     return redirect(auth_uri)
-
 
 @app.route('/oauth2callback', methods=['GET', 'POST'])
 def get_token():
@@ -198,8 +184,42 @@ def get_token():
     content = http.request(
         token_uri, method='POST', body=body, headers=headers)
     access_token = json.loads(content[1])['access_token']
-    refresh_token = json.loads(content[1])['refresh_token']
+    session['ga_token'] = access_token
+    # refresh_token = json.loads(content[1])['refresh_token']
     ##access_token有效期为一小时，超时需使用refresh_token重新获得
-    return access_token, refresh_token
+    # print url_for('query')
+    return redirect('http://gareport.cloga.info/query')
+
+@app.route('/query', methods=['GET', 'POST'])
+def querry():
+    errors = []
+    results = []
+    access_token = session['ga_token']
+    if request.method == "POST":
+        # get url that the person has entered
+        try:
+            profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
+            args = 'access_token=' + str(access_token) +\
+                '&ids=' + profile_id +\
+                '&start-date=' + '2014-09-03' +\
+                '&end-date=' + '2013-01-15' +\
+                '&metrics=' + 'ga:pageviews' +\
+                '&dimensions=' + 'ga:source' +\
+                '&max-results=' + '10000'
+            headers, rows = get_data(args)
+        except:
+            errors.append(
+                "Unable to get URL. Please make sure it's valid and try again."
+            )
+            return render_template('index.html', errors=errors)
+        if rows:
+            df = pd.DataFrame(rows, index=headers)
+            # results = {'url': data, 'title': title, 'terms': terms}
+    # return render_template('index.html', errors=errors, results=results)    
+        return df.to_html()
+    return render_template('query.html', errors=errors)
+#Session Secret Key
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
 if __name__ == '__main__':
     app.run(debug=True)
