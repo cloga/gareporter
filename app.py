@@ -193,8 +193,9 @@ def get_token():
 @app.route('/query', methods=['GET', 'POST'])
 def querry():
     errors = []
-    results = []
+    results = {}
     access_token = session['ga_token']
+    results['token'] = access_token
     if request.method == "POST":
         # get url that the person has entered
         try:
@@ -215,9 +216,9 @@ def querry():
         if rows:
             df = pd.DataFrame(rows, index=headers)
             # results = {'url': data, 'title': title, 'terms': terms}
-    # return render_template('index.html', errors=errors, results=results)    
+    # return render_template('index.html', errors=errors, results=results)   
         return df.to_html()
-    return render_template('query.html', errors=errors)
+    return render_template('query.html', errors=errors, results=results)
 #Session Secret Key
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
