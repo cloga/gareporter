@@ -191,7 +191,7 @@ def get_token():
     return redirect('http://gareport.cloga.info/query')
 
 @app.route('/query', methods=['GET', 'POST'])
-def querry():
+def query():
     errors = []
     results = {}
     access_token = session['ga_token']
