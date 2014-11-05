@@ -85,35 +85,6 @@
         // pretty-print the source
         prettyPrint();
         
-        /* simple inline calendar */
-        $('#simple-calendar').DatePicker({
-          mode: 'single',
-          inline: true,
-          date: new Date()
-        });
-        
-        /* multi inline calendar */
-        $('#multi-calendar').DatePicker({
-          mode: 'multiple',
-          inline: true,
-          calendars: 3,
-          date: [new Date(), new Date() - 1000 * 60 * 60 * 24 * 2, new Date() - 1000 * 60 * 60 * 24 * 4]
-        });
-        
-        /* Calendar tied to text input */
-        $('#inputDate').DatePicker({
-          mode: 'single',
-          position: 'right',
-          onBeforeShow: function(el){
-            if($('#inputDate').val()) $('#inputDate').DatePickerSetDate($('#inputDate').val(), true);
-          },
-          onChange: function(date, el) {
-            $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
-            if($('#closeOnSelect input').attr('checked')) {
-              $(el).DatePickerHide();
-            }
-          }
-        });
         
         /* Special date widget */
        
