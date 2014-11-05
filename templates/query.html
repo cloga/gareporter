@@ -25,14 +25,14 @@
     <link rel="stylesheet" media="screen" type="text/css" href="/static/css/base.css" />
     <link rel="stylesheet" media="screen" type="text/css" href="/static/css/clean.css" />
     <div id="simple-calendar"></div>
-    <input type="hidden" name="data_range" id='data_range'>
+    <input type="hidden" name="date_range" id='date_range'>
     <script type="text/javascript">
         $('#simple-calendar').DatePicker({
             mode: 'single',
             inline: true,
             date: new Date()
         });
-        $('#simple-calendar').DatePicker(onChange: function(d, el) { $("#data_range").value(d) })
+        // $('#simple-calendar').DatePicker(onChange: function(d, el) { $("#data_range").value(d) })
 </script>
         <div>Token: {{results['token']}}</div>
           <form role="form" method="POST" action="/query" enctype="multipart/form-data" style="max-width: 300px;">
