@@ -38,9 +38,9 @@
         onChange: function(dates,el) {
     // update the range display
     $('#date-range-field span').text(
-      dates[0].getDate()+' '+dates[0].getMonthName(true)+', '+
-      dates[0].getFullYear()+' - '+
-      dates[1].getDate()+' '+dates[1].getMonthName(true)+', '+
+      dates[0].getDate()+'-'+dates[0].getMonth(true)+'-'+
+      dates[0].getFullYear()+','+
+      dates[1].getDate()+'-'+dates[1].getMonth(true)+'-'+
       dates[1].getFullYear());
   }
 });
