@@ -27,12 +27,23 @@
     <div id="simple-calendar"></div>
     <input type="hidden" name="date_range" id='date_range'>
     <script type="text/javascript">
-        $('#simple-calendar').DatePicker({
-            mode: 'single',
-            inline: true,
-            date: new Date()
-        });
-        // $('#simple-calendar').DatePicker(onChange: function(d, el) { $("#data_range").value(d) })
+      var to = new Date();
+      var from = new Date(to.getTime() - 1000 * 60 * 60 * 24 * 14);
+      $('#datepicker-calendar').DatePicker({
+        inline: true,
+        date: [from, to],
+        calendars: 3,
+        mode: 'range',
+        current: new Date(to.getFullYear(), to.getMonth() - 1, 1),
+        onChange: function(dates,el) {
+    // update the range display
+    $('#date-range-field span').text(
+      dates[0].getDate()+' '+dates[0].getMonthName(true)+', '+
+      dates[0].getFullYear()+' - '+
+      dates[1].getDate()+' '+dates[1].getMonthName(true)+', '+
+      dates[1].getFullYear());
+  }
+});
 </script>
         <div>Token: {{results['token']}}</div>
           <form role="form" method="POST" action="/query" enctype="multipart/form-data" style="max-width: 300px;">
