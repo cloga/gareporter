@@ -209,11 +209,11 @@ def query():
         try:
             # profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
             args = 'access_token=' + str(access_token) +\
-                '&ids=' + profile_id +\
-                '&start-date=' + start +\
-                '&end-date=' + end +\
-                '&metrics=' + metrics +\
-                '&dimensions=' + dimensions +\
+                '&ids=' + str(profile_id) +\
+                '&start-date=' + str(start) +\
+                '&end-date=' + str(end) +\
+                '&metrics=' + str(metrics) +\
+                '&dimensions=' + str(dimensions) +\
                 '&max-results=' + '10000'
             headers, rows = get_data(args)
             xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
