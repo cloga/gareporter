@@ -13,6 +13,7 @@ import httplib2
 import json
 import pandas as pd
 import sys
+import tempfile
 
 ##Google Oauth
 # 需增加token持久化及刷新的机制
@@ -192,6 +193,7 @@ def get_token():
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
+    file_path = 'static/files/'
     errors = []
     results = {}
     access_token = session['ga_token']
@@ -214,16 +216,20 @@ def query():
                 '&dimensions=' + dimensions +\
                 '&max-results=' + '10000'
             headers, rows = get_data(args)
+            xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
+            df = pd.DataFrame(rows, index=headers)
+            df.to_excel(xlsx_file, index=False)
+            results = {
+            'file_path': file_path,
+            'xlsx_file': os.path.split(xlsx_file.name)[1]
+            }
         except:
             errors.append(
                 "Unable to get data. Please make sure it's valid and try again."
             )
             return render_template('index.html', errors=errors)
-        if rows:
-            df = pd.DataFrame(rows, index=headers)
             # results = {'url': data, 'title': title, 'terms': terms}
     # return render_template('index.html', errors=errors, results=results)   
-        return df.to_html()
     return render_template('query.html', errors=errors, results=results)
 #Session Secret Key
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
