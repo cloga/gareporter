@@ -210,7 +210,7 @@ def query():
             headers, rows = get_data(args)
         except:
             errors.append(
-                "Unable to get URL. Please make sure it's valid and try again."
+                "Unable to get data. Please make sure it's valid and try again."
             )
             return render_template('index.html', errors=errors)
         if rows:
