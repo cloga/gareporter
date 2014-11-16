@@ -191,20 +191,20 @@ def get_token():
     # print url_for('query')
     return redirect('http://gareport.cloga.info/query')
 
-@app.route('/query', methods=['GET', 'POST'])
+@app.route('/query', methods=['GET'])
 def query():
     file_path = 'static/files/'
     errors = []
     results = {}
     access_token = session['ga_token']
     results['token'] = access_token
-    profile_id = 'ga:' + request.form['view_id']
-    start = request.form['start']
-    end = request.form['end']
-    metrics = request.form['metrics']
-    dimensions = request.form['dimensions']
-    filters = request.form['filters']
     if request.method == "POST":
+        profile_id = 'ga:' + request.form['view_id']
+        start = request.form['start']
+        end = request.form['end']
+        metrics = request.form['metrics']
+        dimensions = request.form['dimensions']
+        filters = request.form['filters']
         # get url that the person has entered
         try:
             # profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
