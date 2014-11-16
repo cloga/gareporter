@@ -226,9 +226,7 @@ def query():
             errors.append(
                 "Unable to get data. Please make sure it's valid and try again."
             )
-            return render_template('index.html', errors=errors)
-            # results = {'url': data, 'title': title, 'terms': terms}
-    # return render_template('index.html', errors=errors, results=results)   
+            return render_template('index.html', errors=errors)  
     return render_template('query.html', errors=errors, results=results)
 #Session Secret Key
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'

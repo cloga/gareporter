@@ -22,3 +22,4 @@ six==1.8.0
 uritemplate==0.6
 urllib3==1.9.1
 wsgiref==0.1.2
+xlrd==0.9.3
