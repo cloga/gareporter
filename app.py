@@ -196,16 +196,22 @@ def query():
     results = {}
     access_token = session['ga_token']
     results['token'] = access_token
+    profile_id = 'ga:' + request.form['view_id']
+    start = request.form['start']
+    end = request.form['end']
+    metrics = request.form['metrics']
+    dimensions = request.form['dimensions']
+    filters = request.form['filters']
     if request.method == "POST":
         # get url that the person has entered
         try:
-            profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
+            # profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
             args = 'access_token=' + str(access_token) +\
                 '&ids=' + profile_id +\
-                '&start-date=' + '2014-09-03' +\
-                '&end-date=' + '2013-01-15' +\
-                '&metrics=' + 'ga:pageviews' +\
-                '&dimensions=' + 'ga:source' +\
+                '&start-date=' + start +\
+                '&end-date=' + end +\
+                '&metrics=' + metrics +\
+                '&dimensions=' + dimensions +\
                 '&max-results=' + '10000'
             headers, rows = get_data(args)
         except:
