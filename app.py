@@ -196,15 +196,15 @@ def query():
     file_path = 'static/files/'
     errors = []
     results = {}
-    access_token = session['ga_token']
-    results['token'] = access_token
+    # results['token'] = access_token
     if request.method == "POST":
+        access_token = session['ga_token']
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
         metrics = request.form['metrics']
         dimensions = request.form['dimensions']
-        filters = request.form['filters']
+        # filters = request.form['filters']
         # get url that the person has entered
         try:
             # profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
