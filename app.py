@@ -196,10 +196,11 @@ def query():
     file_path = 'static/files/'
     errors = []
     results = {}
-    # results['token'] = session['ga_token']
+    results['token'] = session['ga_token']
     # results['token'] = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
     if request.method == "POST":
         access_token = session['ga_token']
+        access_token = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
@@ -221,11 +222,12 @@ def query():
             df.to_excel(xlsx_file, index=False)
             results['file_path'] = file_path
             results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
+            return render_template('report.html', errors=errors)  
         except:
             errors.append(
                 "Unable to get data. Please make sure it's valid and try again."
             )
-            return render_template('index.html', errors=errors)  
+            return render_template('report.html', errors=errors)  
     return render_template('query.html', errors=errors, results=results)
 #Session Secret Key
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'

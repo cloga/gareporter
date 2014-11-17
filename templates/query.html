@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>构建你需要的GA报告</title>
+    <title>Query - 构建你需要的GA报告</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -25,7 +25,6 @@
             <h1>GA Reporter For Agency<small>Export GA Data from remote server.</small></h1>
             <h2>构建你需要的GA报告</h2>
         </div>
-        <!-- <div>Token: {{results['token']}}</div> -->
           <form role="form" method="POST" action="/query">
             <div class="form-group">
               <input type="text" name="view_id" class="form-control" id="view_id" placeholder="输入View ID" style="max-width: 300px;">
@@ -39,10 +38,9 @@
           </form>
           </p>
           </div>
-          {% if results %}
-          <h2>下载你的GA报告</h2>
-          <a href="{{ results['file_path'] }}{{ results['xlsx_file'] }}">下载你的报告</a>
-          {% endif %}
+            {% for error in errors %}
+            <h4>{{ error }}</h4>
+          {% endfor %}
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     
