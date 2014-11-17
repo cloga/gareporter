@@ -29,9 +29,9 @@ scope = 'https://www.googleapis.com/auth/analytics.readonly'
 data_uri = 'https://www.googleapis.com/analytics/v3/data/ga'
 mcf_uri = 'https://www.googleapis.com/analytics/v3/data/mcf'
 
-proxy = httplib2.ProxyInfo(3, '127.0.0.1', 8087)
-http = httplib2.Http(
-    proxy_info=proxy, disable_ssl_certificate_validation=True)
+# proxy = httplib2.ProxyInfo(3, '127.0.0.1', 8087)
+# http = httplib2.Http(
+    # proxy_info=proxy, disable_ssl_certificate_validation=True)
 
 http = httplib2.Http(disable_ssl_certificate_validation=True)
 
@@ -197,10 +197,10 @@ def query():
     errors = []
     results = {}
     results['token'] = session['ga_token']
-    # results['token'] = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
+    # results['token'] = 'ya29.wQBVF5t-NeQz1Em9w9SiWeb-HK6soxRewQdr0dUh-nOrwcveYkFNxvCLTQJ3jsps5x8kOSbdpmH15A'
     if request.method == "POST":
         access_token = session['ga_token']
-        # access_token = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
+        # access_token = 'ya29.wQBVF5t-NeQz1Em9w9SiWeb-HK6soxRewQdr0dUh-nOrwcveYkFNxvCLTQJ3jsps5x8kOSbdpmH15A'
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
