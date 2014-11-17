@@ -216,12 +216,13 @@ def query():
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'
         headers, rows = get_data(args)
+        return rows
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         df = pd.DataFrame(rows, index=headers)
         df.to_excel(xlsx_file, index=False)
         results['file_path'] = file_path
         results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
-        return render_template('report.html', errors=errors)  
+        return render_template('report.html', errors=errors, results=results)  
     return render_template('query.html', errors=errors, results=results)
 #Session Secret Key
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
