@@ -20,6 +20,11 @@
         <div class="page-header">
             <h1>GA Reporter For Agency<small>Custermize Metric, and export GA Data from remote server.</small></h1>
             <a href='/oauth'>点击调转到Google网站进行授权，以便获取GA Report数据</a>
+              {% for error in errors %}
+            <h4>{{ error }}</h4>
+          {% endfor %}
+    </div>
+    </div>
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     
