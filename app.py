@@ -200,7 +200,7 @@ def query():
     # results['token'] = 'ya29.wQBVF5t-NeQz1Em9w9SiWeb-HK6soxRewQdr0dUh-nOrwcveYkFNxvCLTQJ3jsps5x8kOSbdpmH15A'
     if request.method == "POST":
         access_token = session['ga_token']
-        # access_token = 'ya29.wQBVF5t-NeQz1Em9w9SiWeb-HK6soxRewQdr0dUh-nOrwcveYkFNxvCLTQJ3jsps5x8kOSbdpmH15A'
+        # access_token = ' ya29.wQAk9XheM6W_28ODMFFh9_yyMMkY4G6eI4d0Vx7kHbXABWdbTNxaDKHkeJxPdP2cuXerwQxmsf_dqw'
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
@@ -215,8 +215,9 @@ def query():
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'
+        url = data_uri + '?' + args
+        return json.loads(urllib2.urlopen(url).read())
         headers, rows = get_data(args)
-        return rows
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         df = pd.DataFrame(rows, index=headers)
         df.to_excel(xlsx_file, index=False)
