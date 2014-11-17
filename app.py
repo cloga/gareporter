@@ -197,8 +197,9 @@ def query():
     errors = []
     results = {}
     results['token'] = session['ga_token']
+    # results['token'] = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
     if request.method == "POST":
-        access_token = session['ga_token']
+        access_token = results['token']
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
@@ -218,10 +219,8 @@ def query():
             xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
             df = pd.DataFrame(rows, index=headers)
             df.to_excel(xlsx_file, index=False)
-            results = {
-            'file_path': file_path,
-            'xlsx_file': os.path.split(xlsx_file.name)[1]
-            }
+            results['file_path'] = file_path
+            results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
         except:
             errors.append(
                 "Unable to get data. Please make sure it's valid and try again."
