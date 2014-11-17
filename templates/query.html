@@ -25,6 +25,9 @@
             <h1>GA Reporter For Agency<small>Export GA Data from remote server.</small></h1>
             <h2>构建你需要的GA报告</h2>
         </div>
+        {% if results %}
+        <div>Token: {{results['token']}}</div>
+        {% endif %}
           <form role="form" method="POST" action="/query">
             <div class="form-group">
               <input type="text" name="view_id" class="form-control" id="view_id" placeholder="输入View ID" style="max-width: 300px;">
