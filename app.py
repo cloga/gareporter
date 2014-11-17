@@ -196,11 +196,11 @@ def query():
     file_path = 'static/files/'
     errors = []
     results = {}
-    results['token'] = session['ga_token']
-    # results['token'] = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
+    # results['token'] = session['ga_token']
+    results['token'] = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
     if request.method == "POST":
-        access_token = session['ga_token']
-        # access_token = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
+        # access_token = session['ga_token']
+        access_token = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
@@ -215,8 +215,8 @@ def query():
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'
+        return args
         headers, rows = get_data(args)
-        return rows
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         df = pd.DataFrame(rows, index=headers)
         df.to_excel(xlsx_file, index=False)
