@@ -215,6 +215,7 @@ def query():
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'
+        return json.loads(urllib2.urlopen('http://gareport.cloga.info/static/files/sample.json').read())    
         headers, rows = get_data(args)
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         df = pd.DataFrame(rows, index=headers)
