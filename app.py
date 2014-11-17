@@ -215,9 +215,6 @@ def query():
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'
-        url = data_uri + '?' + args
-        # return urllib2.urlopen(url).read()
-        return json.loads(urllib2.urlopen(url).read())
         headers, rows = get_data(args)
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         df = pd.DataFrame(rows, index=headers)
