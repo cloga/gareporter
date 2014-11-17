@@ -196,7 +196,7 @@ def query():
     file_path = 'static/files/'
     errors = []
     results = {}
-    # results['token'] = access_token
+    results['token'] = access_token
     if request.method == "POST":
         access_token = session['ga_token']
         profile_id = 'ga:' + request.form['view_id']
