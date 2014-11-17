@@ -200,34 +200,28 @@ def query():
     # results['token'] = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
     if request.method == "POST":
         access_token = session['ga_token']
-        access_token = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
+        # access_token = 'ya29.wQAjNCzhnDpjynZcmd1Zme5yiWrSqquOwi8byFkudtv_xc8kyYjBd31yxN8Q49MSrsZLKWUwNzpKPw'
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
         metrics = request.form['metrics']
         dimensions = request.form['dimensions']
         # filters = request.form['filters']
-        try:
-            # profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
-            args = 'access_token=' + str(access_token) +\
-                '&ids=' + str(profile_id) +\
-                '&start-date=' + str(start) +\
-                '&end-date=' + str(end) +\
-                '&metrics=' + str(metrics) +\
-                '&dimensions=' + str(dimensions) +\
-                '&max-results=' + '10000'
-            headers, rows = get_data(args)
-            xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
-            df = pd.DataFrame(rows, index=headers)
-            df.to_excel(xlsx_file, index=False)
-            results['file_path'] = file_path
-            results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
-            return render_template('report.html', errors=errors)  
-        except:
-            errors.append(
-                "Unable to get data. Please make sure it's valid and try again."
-            )
-            return render_template('report.html', errors=errors)  
+        # profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
+        args = 'access_token=' + str(access_token) +\
+            '&ids=' + str(profile_id) +\
+            '&start-date=' + str(start) +\
+            '&end-date=' + str(end) +\
+            '&metrics=' + str(metrics) +\
+            '&dimensions=' + str(dimensions) +\
+            '&max-results=' + '10000'
+        headers, rows = get_data(args)
+        xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
+        df = pd.DataFrame(rows, index=headers)
+        df.to_excel(xlsx_file, index=False)
+        results['file_path'] = file_path
+        results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
+        return render_template('report.html', errors=errors)  
     return render_template('query.html', errors=errors, results=results)
 #Session Secret Key
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
