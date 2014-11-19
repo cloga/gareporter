@@ -50,7 +50,7 @@ http = httplib2.Http(disable_ssl_certificate_validation=True)
 # url = 'https://www.googleapis.com/analytics/v3/data/ga?access_token=ya29.wwAl_oJqu37-d_ytQcGj-RtgANH1DAKshqai-bGFyTXlt8JrvJGZnjl-P2FXxFzF3_Z8eRoJtVkB9A&ids=ga:36050032&start-date=2014-01-01&end-date=2014-11-01&metrics=ga:pageviews,ga:sessions&dimensions=ga:source,ga:medium&max-results=10000'
 def get_data(args):
     url = data_uri + '?' + args
-    # print u'解析数据,打开:\n' + url
+    print u'解析数据,打开:\n' + url
     return url
     # return urllib2.urlopen(url).read()
     content = json.loads(urllib2.urlopen(url).read())
