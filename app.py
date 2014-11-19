@@ -38,6 +38,8 @@ http = httplib2.Http(disable_ssl_certificate_validation=True)
 def get_data(args):
     url = data_uri + '?' + args
     print u'解析数据,打开:\n' + url
+    urllib2.urlopen(url).read()
+    return 'OK'
     content = json.loads(urllib2.urlopen(url).read())
     headers = [i['name'] for i in content['columnHeaders']]
     rows = [','.join(i).encode('gbk', 'ignore') for i in content['rows']]
@@ -216,7 +218,7 @@ def query():
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
         headers, rows = get_data(args)
-        return 'ok'
+        # return 'ok'
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         df = pd.DataFrame(rows, index=headers)
         df.to_excel(xlsx_file, index=False)
