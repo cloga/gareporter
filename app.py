@@ -106,7 +106,7 @@ def query():
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
         url = data_uri + '?' + args
-        url = 'http://cloga.info/files/ga.json'
+        # url = 'http://cloga.info/files/ga.json'
         content = json.loads(urllib2.urlopen(url).read())
         columns = [i['name'] for i in content['columnHeaders']]
         dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
