@@ -108,7 +108,7 @@ def query():
         url = data_uri + '?' + args
         url = 'http://cloga.info/files/ga.json'
         content = json.loads(urllib2.urlopen(url).read())
-        return content
+        return 'content'
         columns = [i['name'] for i in content['columnHeaders']]
         dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
         pages = content['totalResults'] / 10000.0 + 1
