@@ -52,7 +52,7 @@ def get_data(args):
     url = data_uri + '?' + args
     print u'解析数据,打开:\n' + url
     return url
-    return urllib2.urlopen(url).read()
+    # return urllib2.urlopen(url).read()
     content = json.loads(urllib2.urlopen(url).read())
     columns = [i['name'] for i in content['columnHeaders']]
     dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
@@ -233,7 +233,7 @@ def query():
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
-        return 'ok'
+        # return 'ok'
         df =  get_data(args)
         return df
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
