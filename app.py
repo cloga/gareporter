@@ -50,10 +50,8 @@ http = httplib2.Http(disable_ssl_certificate_validation=True)
 # url = 'https://www.googleapis.com/analytics/v3/data/ga?access_token=ya29.wwAl_oJqu37-d_ytQcGj-RtgANH1DAKshqai-bGFyTXlt8JrvJGZnjl-P2FXxFzF3_Z8eRoJtVkB9A&ids=ga:36050032&start-date=2014-01-01&end-date=2014-11-01&metrics=ga:pageviews,ga:sessions&dimensions=ga:source,ga:medium&max-results=10000'
 def get_data(args):
     url = data_uri + '?' + args
-    print u'解析数据,打开:\n' + url
-    # return url
-    return urllib2.urlopen(url).read()
     content = json.loads(urllib2.urlopen(url).read())
+    return content
     columns = [i['name'] for i in content['columnHeaders']]
     dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
     pages = content['totalResults'] / 10000.0 + 1
@@ -61,7 +59,7 @@ def get_data(args):
     if pages > 2:
         for i in range(2, pages):
                 url0 = url + '&start-index=' + str(i * 10000)
-                print '解析数据,打开:\n' + url0
+                # print '解析数据,打开:\n' + url0
                 content0 = json.loads(urllib2.urlopen(url0).read())
                 rows += content0['rows']
     df = pd.DataFrame(rows, columns=columns)
