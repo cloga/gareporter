@@ -21,13 +21,17 @@ import tempfile
 
 client_id = '239823730922-72pfrs8hjs640ptrb1kecinogffhhdh9.apps.googleusercontent.com'  # 请替换为你的Client_id
 client_secret = '1fhPtLWXGjp9qgzAib28SThi'  # 请替换为你的Client_secret
-redirect_uri = 'http://gareport.cloga.info/oauth2callback'
-# redirect_uri = 'http://127.0.0.1:5000/oauth2callback'
+# redirect_uri = 'http://gareport.cloga.info/oauth2callback'
+redirect_uri = 'http://127.0.0.1:5000/oauth2callback'
 auth_server = 'https://accounts.google.com/o/oauth2/auth'
 token_uri = 'https://accounts.google.com/o/oauth2/token'
 scope = 'https://www.googleapis.com/auth/analytics.readonly'
 data_uri = 'https://www.googleapis.com/analytics/v3/data/ga'
 mcf_uri = 'https://www.googleapis.com/analytics/v3/data/mcf'
+# meta_data = 'https://www.googleapis.com/analytics/v3/metadata/ga/columns?pp=1'
+# meta_data = json.loads(urllib2.urlopen(meta_data).read())
+
+dtype_mapping = {u'CURRENCY':'object', u'FLOAT' : float, u'INTEGER' : int, u'PERCENT' : float, u'STRING' : str, u'TIME': 'object'} 
 
 # proxy = httplib2.ProxyInfo(3, '127.0.0.1', 8087)
 # http = httplib2.Http(
@@ -35,24 +39,25 @@ mcf_uri = 'https://www.googleapis.com/analytics/v3/data/mcf'
 
 http = httplib2.Http(disable_ssl_certificate_validation=True)
 
+# url = 'https://www.googleapis.com/analytics/v3/data/ga?access_token=ya29.wwAl_oJqu37-d_ytQcGj-RtgANH1DAKshqai-bGFyTXlt8JrvJGZnjl-P2FXxFzF3_Z8eRoJtVkB9A&ids=ga:36050032&start-date=2014-01-01&end-date=2014-11-01&metrics=ga:pageviews,ga:sessions&dimensions=ga:source,ga:medium&max-results=10000'
 def get_data(args):
     url = data_uri + '?' + args
     print u'解析数据,打开:\n' + url
-    urllib2.urlopen(url).read()
-    return 'OK'
     content = json.loads(urllib2.urlopen(url).read())
-    headers = [i['name'] for i in content['columnHeaders']]
-    rows = [','.join(i).encode('gbk', 'ignore') for i in content['rows']]
-    if content['totalResults'] <= 10000:
-        return headers, rows
-    elif content['totalResults'] > 10000:
-        for i in range(2, content['totalResults'] / 10000 + 1):
-            url0 = url + '&start-index=' + str(i * 10000)
-            print '解析数据,打开:\n' + url0
-            content0 = json.loads(urllib2.urlopen(url0).read())
-            rows += [','.join(i).encode('gbk', 'ignore')
-                     for i in content0['rows']]
-        return headers, rows
+    columns = [i['name'] for i in content['columnHeaders']]
+    dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
+    pages = content['totalResults'] / 10000.0 + 1
+    rows = content['rows']
+    if pages > 2:
+        for i in range(2, pages):
+                url0 = url + '&start-index=' + str(i * 10000)
+                print '解析数据,打开:\n' + url0
+                content0 = json.loads(urllib2.urlopen(url0).read())
+                rows += content0['rows']
+    df = pd.DataFrame(rows, columns=columns)
+    for c in df.columns:
+        df[c] = df[c].astype(dtypes[c])
+    return df
 
 
 def get_mcf_data(args):
@@ -191,7 +196,8 @@ def get_token():
     # refresh_token = json.loads(content[1])['refresh_token']
     ##access_token有效期为一小时，超时需使用refresh_token重新获得
     # print url_for('query')
-    return redirect('http://gareport.cloga.info/query')
+    # return redirect('http://gareport.cloga.info/query')
+    return redirect(url_for('query'))
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
@@ -217,11 +223,10 @@ def query():
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
-        # headers, rows = get_data(args)
-        return get_data(args)
+        df =  get_data(args)
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
-        df = pd.DataFrame(rows, index=headers)
-        df.to_excel(xlsx_file, index=False)
+        # df.to_excel('static/files/xlsx_file.xlsx', index=False)
+        df.to_excel(xlsx_file.name, index=False)
         results['file_path'] = file_path
         results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
         return render_template('report.html', errors=errors, results=results)  
