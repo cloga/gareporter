@@ -217,8 +217,8 @@ def query():
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
-        headers, rows = get_data(args)
-        # return 'ok'
+        # headers, rows = get_data(args)
+        return get_data(args)
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         df = pd.DataFrame(rows, index=headers)
         df.to_excel(xlsx_file, index=False)
