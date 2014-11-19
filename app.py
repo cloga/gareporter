@@ -114,7 +114,7 @@ def query():
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
         url = data_uri + '?' + args
-        # return url
+        return url
         content = json.loads(urllib2.urlopen(url).read())
         return content
         columns = [i['name'] for i in content['columnHeaders']]
