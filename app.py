@@ -108,15 +108,13 @@ def query():
         url = data_uri + '?' + args
         url = 'http://cloga.info/files/ga.json'
         content = json.loads(urllib2.urlopen(url).read())
-        return 'content'
         columns = [i['name'] for i in content['columnHeaders']]
         dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
-        pages = content['totalResults'] / 10000.0 + 1
+        pages = content['totalResults'] / 10000 + 1 if content['totalResults'] / 10000 != content['totalResults'] / 10000.0 else content['totalResults'] / 10000
         rows = content['rows']
         if pages >= 2:
             for i in range(2, pages):
                     url0 = url + '&start-index=' + str(i * 10000) + str(1)
-                    # print '解析数据,打开:\n' + url0
                     content0 = json.loads(urllib2.urlopen(url0).read())
                     rows += content0['rows']
         df = pd.DataFrame(rows, columns=columns)
