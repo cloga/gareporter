@@ -51,8 +51,8 @@ http = httplib2.Http(disable_ssl_certificate_validation=True)
 def get_data(args):
     url = data_uri + '?' + args
     print u'解析数据,打开:\n' + url
+    return urllib2.urlopen(url).read()
     content = json.loads(urllib2.urlopen(url).read())
-    return content
     columns = [i['name'] for i in content['columnHeaders']]
     dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
     pages = content['totalResults'] / 10000.0 + 1
