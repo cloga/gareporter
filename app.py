@@ -31,14 +31,6 @@ mcf_uri = 'https://www.googleapis.com/analytics/v3/data/mcf'
 # meta_data = 'https://www.googleapis.com/analytics/v3/metadata/ga/columns?pp=1'
 # meta_data = json.loads(urllib2.urlopen(meta_data).read())
 
-# proxy = urllib2.ProxyHandler({'http': 'http://127.0.0.1:8087'})
-# opener = urllib2.build_opener(proxy)
-# urllib2.install_opener(opener)
-# url = 'https://www.googleapis.com/analytics/v3/data/ga?access_token=ya29.wwBLMeIS6Nymos_go3qZJi0CECKsuVZTcQCRXFDVj4G1S4zq0OdRPdWiLV7ftOIotk51-j77af0-zg&ids=ga:36050032&start-date=2014-01-01&end-date=2014-11-01&metrics=ga:pageviews,ga:sessions&dimensions=ga:source,ga:medium&max-results=10000'
-# urllib2.urlopen(url).read()
-# print urllib2.urlopen('http://www.youtube.com').read()
-
-
 dtype_mapping = {u'CURRENCY':'object', u'FLOAT' : float, u'INTEGER' : int, u'PERCENT' : float, u'STRING' : str, u'TIME': 'object'} 
 
 # proxy = httplib2.ProxyInfo(3, '127.0.0.1', 8087)
@@ -114,7 +106,7 @@ def query():
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
         url = data_uri + '?' + args
-        return url
+        url = 'http://cloga.info/files/ga.json'
         content = json.loads(urllib2.urlopen(url).read())
         return content
         columns = [i['name'] for i in content['columnHeaders']]
