@@ -234,6 +234,7 @@ def query():
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
         df =  get_data(args)
+        return 'ok'
         return df
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         # df.to_excel('static/files/xlsx_file.xlsx', index=False)
