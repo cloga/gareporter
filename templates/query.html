@@ -3,14 +3,14 @@
     <head>
         <title>Query - 构建你需要的GA报告</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="../static/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="../static/css/main.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <script src="../static/js/jquery.min.js"></script>
-        <!-- <script src="http://timdream.org/wordcloud2.js/src/wordcloud2.js"></script> -->
-        <link href="../static/css/prettify.css" type="text/css" rel="stylesheet" />
+        <link href="../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="../static/css/main.css" rel="stylesheet" type="text/css" />
+        <link href="../static/css/base.css" rel="stylesheet" type="text/css" />
+        <link href="../static/css/clean.css" rel="stylesheet" type="text/css" />
+        <link href="../static/css/prettify.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="../static/js/prettify.js"></script>
-        <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+
     </head>
     <body>
         <div class="container">
@@ -26,10 +26,16 @@
                     <p>Token: {{results['token']}}</p>
                     <label for="view_id">ViewID: (如图)</label>
                     <input type="text" name="view_id" class="form-control short-text-box" id="view_id" placeholder="输入View ID" />
-                    <label for="start">Start:</label>
-                    <input type="text" name="start" class="form-control short-text-box" id="start" placeholder="2014-01-01" />
-                    <label for="end">End:</label>
-                    <input type="text" name="end" class="form-control short-text-box" id="end" placeholder="2014-01-01" />
+                    <div class="select-date-div start-date">
+                        <label for="start">Start:</label>
+                        <input type="text" name="start" class="form-control date-box" id="start" placeholder="2014-01-01" />
+                        <div id="datepicker-start" class="datepircker-container"></div>
+                    </div>
+                    <div class="select-date-div end-date">
+                        <label for="end">End:</label>
+                        <input type="text" name="end" class="form-control date-box" id="end" placeholder="2014-01-01" />
+                        <div id="datepicker-end" class="datepircker-container"></div>
+                    </div>
                     <label for="metrics">Metrics:</label>
                     <input type="text" name="metrics" class="form-control long-text-box" id="metrics" placeholder="输入metrics, 例如: ga:pageviews,ga:sessions" />
                     <label for="dimensions">Dimensions:</label>
@@ -43,14 +49,32 @@
             {% endfor %}
 
         <!-- Google Tag Manager -->
-        <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-7VF4"
+<!--         <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-7VF4"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-7VF4');</script>
+        })(window,document,'script','dataLayer','GTM-7VF4');</script> -->
         <!-- End Google Tag Manager -->
+        <script type="text/javascript" src="../static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../static/js/datepicker.js"></script>
+        <script type="text/javascript">
+            $( function () {
+                $('#datepicker-start').DatePicker({
+                    mode: 'single',
+                    inline: true,
+                    date: new Date()
+                });
+
+                $('#datepicker-end').DatePicker({
+                    mode: 'single',
+                    inline: true,
+                    date: new Date()
+                });
+            });
+        </script>>
 
     </body>
 </html>
