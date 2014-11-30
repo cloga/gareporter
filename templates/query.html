@@ -169,12 +169,12 @@
                 $('#dimensions-selected').multiSelect({
                     afterSelect: function (value) {
                         sltDims.push(value);
-                        $('input[name="dimensions"]').val(sltMtxs.join(","));
+                        $('input[name="dimensions"]').val(sltDims.join(","));
                     },
                     afterDeselect: function (value) {
                         var i = sltDims.getIndexByValue(value);
                         sltDims.remove(i);
-                        $('input[name="dimensions"]').val(sltMtxs.join(","));
+                        $('input[name="dimensions"]').val(sltDims.join(","));
                     }
                 });
 
