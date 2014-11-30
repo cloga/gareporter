@@ -9,6 +9,7 @@
         <link href="../static/css/base.css" rel="stylesheet" type="text/css" />
         <link href="../static/css/clean.css" rel="stylesheet" type="text/css" />
         <link href="../static/css/prettify.css" rel="stylesheet" type="text/css" />
+        <link href="../static/css/multiselect.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="../static/js/prettify.js"></script>
 
     </head>
@@ -19,7 +20,7 @@
                 <h2>构建你需要的GA报告</h2>
             </div>
             <div class="tip-box">
-                <img class="img-box" src="http://cloga.info/files/viewid.png" /></br>
+                <img class="img-box" src="../static/img/viewid.png" /></br>
             </div>
             <div class="form-group">
                 <form role="form" method="POST" action="/query">
@@ -27,22 +28,36 @@
                     <label for="view_id">ViewID: (如图)</label>
                     <input type="text" name="view_id" class="form-control short-text-box" id="view_id" placeholder="输入View ID" />
                     <div class="select-date-div start-date">
-                        <label for="start">Start:</label>
-                        <input type="text" name="start" class="form-control date-box" id="start" placeholder="2014-01-01" />
+                        <label for="datepicker-start">Start Date:</label> 
                         <div id="datepicker-start" class="datepircker-container"></div>
+                        <input name="start" type="hidden" value=""/>
                     </div>
                     <div class="select-date-div end-date">
-                        <label for="end">End:</label>
-                        <input type="text" name="end" class="form-control date-box" id="end" placeholder="2014-01-01" />
+                        <label for="datepicker-end">End Date:</label>
                         <div id="datepicker-end" class="datepircker-container"></div>
+                        <input name="end" type="hidden" value=""/>
                     </div>
-                    <label for="metrics">Metrics:</label>
-                    <input type="text" name="metrics" class="form-control long-text-box" id="metrics" placeholder="输入metrics, 例如: ga:pageviews,ga:sessions" />
-                    <label for="dimensions">Dimensions:</label>
-                    <input type="text" name="dimensions" class="form-control long-text-box" id="dimensions" placeholder="输入dimentions, 例如: ga:source,ga:medium"/>
+                    <div class="multiselect-div">
+                        
+                        <!-- <input type="text" name="metrics" class="form-control long-text-box" id="metrics" placeholder="输入metrics, 例如: ga:pageviews,ga:sessions" /> -->
+                        <div class="multiselect-container" id="metrics-selected-div">
+                            <label class="multiselect-label">Metrics:</label>
+                            <select multiple="multiple" id="metrics-selected" name="metrics-selected">
+                            </select>
+                            <input name="metrics" type="hidden" value=""/>
+                        </div>
+                        
+                        <div class="multiselect-container" id="dimensions-selected-div">
+                            <label class="multiselect-label">Dimensions:</label>
+                            <select multiple="multiple" id="dimensions-selected" name="dimensions-selected">
+                            </select>
+                            <input name="dimensions" type="hidden" value=""/>
+                        </div>
+                    </div>
+                    <!-- <input type="text" name="dimensions" class="form-control long-text-box" id="dimensions" placeholder="输入dimentions, 例如: ga:source,ga:medium"/> -->
                     <label for="filters">filter:</label>
                     <input type="text" name="filters" class="form-control long-text-box" id="filters" placeholder="输入filters" />
-                    <input type="submit" class="btn btn-default" value="提交" /input>
+                    <input type="submit" class="btn btn-default" value="提交" />
             </div>
             {% for error in errors %}
             <h4>{{ error }}</h4>
@@ -60,19 +75,111 @@
         <script type="text/javascript" src="../static/js/jquery.min.js"></script>
         <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="../static/js/datepicker.js"></script>
+        <script type="text/javascript" src="../static/js/gajson.js"></script>
+        <script type="text/javascript" src="../static/js/multiselect.js" ></script>
         <script type="text/javascript">
+            //定义通过值获取所在位置方法
+            Array.prototype.getIndexByValue= function (value) {
+                var index = -1;
+                for (var i = 0; i < this.length; i++)
+                {
+                    if (this[i] == value)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                return index;
+            }
+            //定义删除当前位置的数组元素方法
+            Array.prototype.remove=function (index)  {
+                if (isNaN(index) || index > this.length){return false;}
+                for (var i = 0, n = 0; i < this.length; i++)
+                {
+                    if(this[i] != this[index])
+                    {
+                        this[n++] = this[i];
+                    }
+                }
+                this.length -= 1
+            }
+
             $( function () {
                 $('#datepicker-start').DatePicker({
                     mode: 'single',
                     inline: true,
-                    date: new Date()
+                    date: new Date(),
+                    onChange: function (date, element) {
+                        var dateString = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
+                        $('input[name="start"]').val(dateString);
+                    }
                 });
 
                 $('#datepicker-end').DatePicker({
                     mode: 'single',
                     inline: true,
-                    date: new Date()
+                    date: new Date(),
+                    onChange: function (date, element) {
+                        var dateString = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
+                        $('input[name="end"]').val(dateString);
+                    }
                 });
+            //输出metric和dimension
+                var gaJSONItems = gaJSON.items;
+                var dimensionItems = [];
+                var metricItems = [];
+                // //定义排序函数
+                // function sortByItemUIName(a, b){
+                //     return a.attributes.uiName - b.attributes.uiName;
+                // }
+                //将gaJson中的items分拆成Metris和Dimensions两个数组
+                $.each(gaJSONItems, function (index, item) {
+                    if (item.attributes.type == "DIMENSION" && item.attributes.status == "PUBLIC"){
+                        dimensionItems.push(item);
+                    }else if(item.attributes.type == "METRIC" && item.attributes.status == "PUBLIC"){
+                        metricItems.push(item);
+                    }
+                });
+                $.each(metricItems, function (index, item) {
+                    var id = item.id;
+                    var uiName = item.attributes.uiName;
+                    var checkBoxHtml = '<option value="'+ id + '">' + uiName + '</option>';
+                    $("#metrics-selected").append(checkBoxHtml);
+                });
+                $.each(dimensionItems, function (index, item) {
+                    var id = item.id;
+                    var uiName = item.attributes.uiName;
+                    var checkBoxHtml = '<option value="'+ id + '">' + uiName + '</option>';
+                    $("#dimensions-selected").append(checkBoxHtml);
+                });
+                //将选中的值存入数组并写入hidden input的value以便提交form
+                var sltMtxs = [];
+                var sltDims = [];
+                $('#metrics-selected').multiSelect({
+                    afterSelect: function (value) {
+                        sltMtxs.push(value);
+                        $('input[name="metrics"]').val(sltMtxs.join(","));
+                    },
+                    afterDeselect: function (value) {
+                        var i = sltDims.getIndexByValue(value);
+                        sltMtxs.remove(i);
+                        $('input[name="metrics"]').val(sltMtxs.join(","));
+                    }
+                });
+                $('#dimensions-selected').multiSelect({
+                    afterSelect: function (value) {
+                        sltDims.push(value);
+                        $('input[name="dimensions"]').val(sltMtxs.join(","));
+                    },
+                    afterDeselect: function (value) {
+                        var i = sltDims.getIndexByValue(value);
+                        sltDims.remove(i);
+                        $('input[name="dimensions"]').val(sltMtxs.join(","));
+                    }
+                });
+
+
+
             });
         </script>>
 
