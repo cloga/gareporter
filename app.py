@@ -122,7 +122,6 @@ def query():
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         # df.to_excel('static/files/xlsx_file.xlsx', index=False)
         df.to_excel(xlsx_file.name, index=False)
-        # return url
         results['file_path'] = file_path
         results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
         return render_template('report.html', errors=errors, results=results)  
