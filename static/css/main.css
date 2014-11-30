@@ -51,4 +51,17 @@ div.datepircker-container{
 }
 div.select-date-div{
     display: inline-block;
+
 }
+
+div.datepicker .datepickerContainer td a {
+    cursor: pointer;
+}
+div.datepicker td.datepickerDisabled a {
+    cursor: default;
+}
+.multiselect-container{
+    width: 370px;
+    display: inline-block;
+    margin-right: 40px;
+};
