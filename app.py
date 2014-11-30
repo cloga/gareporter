@@ -107,7 +107,6 @@ def query():
             '&max-results=' + '10000'   
         url = data_uri + '?' + args
         content = json.loads(urllib2.urlopen(url).read())
-        return url
         columns = [i['name'] for i in content['columnHeaders']]
         dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
         pages = content['totalResults'] / 10000 + 1 if content['totalResults'] / 10000 != content['totalResults'] / 10000.0 else content['totalResults'] / 10000
@@ -118,6 +117,7 @@ def query():
                     content0 = json.loads(urllib2.urlopen(url0).read())
                     rows += content0['rows']
         df = pd.DataFrame(rows, columns=columns)
+        return url
         for c in df.columns:
             df[c] = df[c].astype(dtypes[c])
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
