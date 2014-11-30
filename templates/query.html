@@ -44,6 +44,7 @@
                             <label class="multiselect-label">Metrics:</label>
                             <select multiple="multiple" id="metrics-selected" name="metrics-selected">
                             </select>
+                            <a href="javascript:void(0);" class="clear-all-btn" id="clear-metrics-btn">Clear Selected</a>
                             <input name="metrics" type="hidden" value=""/>
                         </div>
                         
@@ -52,6 +53,7 @@
                             <select multiple="multiple" id="dimensions-selected" name="dimensions-selected">
                             </select>
                             <input name="dimensions" type="hidden" value=""/>
+                            <a href="javascript:void(0);" class="clear-all-btn" id="clear-dimensions-btn">Clear Selected</a>
                         </div>
                     </div>
                     <!-- <input type="text" name="dimensions" class="form-control long-text-box" id="dimensions" placeholder="输入dimentions, 例如: ga:source,ga:medium"/> -->
@@ -110,7 +112,7 @@
                     inline: true,
                     date: new Date(),
                     onChange: function (date, element) {
-                        var dateString = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
+                        var dateString = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
                         $('input[name="start"]').val(dateString);
                     }
                 });
@@ -155,7 +157,7 @@
                 //将选中的值存入数组并写入hidden input的value以便提交form
                 var sltMtxs = [];
                 var sltDims = [];
-                $('#metrics-selected').multiSelect({
+                $("#metrics-selected").multiSelect({
                     afterSelect: function (value) {
                         sltMtxs.push(value);
                         $('input[name="metrics"]').val(sltMtxs.join(","));
@@ -166,7 +168,7 @@
                         $('input[name="metrics"]').val(sltMtxs.join(","));
                     }
                 });
-                $('#dimensions-selected').multiSelect({
+                $("#dimensions-selected").multiSelect({
                     afterSelect: function (value) {
                         sltDims.push(value);
                         $('input[name="dimensions"]').val(sltDims.join(","));
@@ -178,6 +180,17 @@
                     }
                 });
 
+                $("#clear-metrics-btn").click(function () {
+                    $("#metrics-selected").multiSelect("deselect_all");
+                    sltMtxs.length = 0;
+                    $('input[name="metrics"]').val("");
+                });
+
+                $("#clear-dimensions-btn").click(function () {
+                    $("#dimensions-selected").multiSelect("deselect_all");
+                    sltDims.length = 0;
+                    $('input[name="dimensions"]').val("");
+                });
 
 
             });
