@@ -29,13 +29,15 @@
                     <input type="text" name="view_id" class="form-control short-text-box" id="view_id" placeholder="输入View ID" />
                     <div class="select-date-div start-date">
                         <label for="datepicker-start">Start Date:</label> 
+                        <input type="text" id="input-start-date" name="start"/>
                         <div id="datepicker-start" class="datepircker-container"></div>
-                        <input name="start" type="hidden" value=""/>
+                        <!-- input name="start" type="hidden" value=""/> -->
                     </div>
                     <div class="select-date-div end-date">
                         <label for="datepicker-end">End Date:</label>
+                        <input type="text" id="input-end-date" name="end"/>
                         <div id="datepicker-end" class="datepircker-container"></div>
-                        <input name="end" type="hidden" value=""/>
+                        <!-- <input name="end" type="hidden" value=""/> -->
                     </div>
                     <div class="multiselect-div">
                         
@@ -105,27 +107,50 @@
                 }
                 this.length -= 1
             }
-
+            //为10以下的日期和月份添加0
+            function AppendZero(obj) {
+                if (obj < 10) {return "0" + "" + obj;}
+                else{ return obj;}
+            }
+            //将日期转换为ga支持的格式
+            function ConvertDate(date) {
+                return date.getFullYear() + "-" + AppendZero((date.getMonth() + 1)) + "-" + AppendZero(date.getDate());
+            }
             $( function () {
-                $('#datepicker-start').DatePicker({
-                    mode: 'single',
-                    inline: true,
-                    date: new Date(),
+                //为start&end text box 赋值当天的日期
+                var today = new Date();
+                $("#input-start-date").val(ConvertDate(today));
+                $("#input-end-date").val(ConvertDate(today));
+                $('#input-start-date').DatePicker({
+                    mode: "single",
+                    // inline: true,
+                    position: "bottom",
+                    onBeforeShow: function (element) {
+                        if($("#input-start-date").val()){
+                            $("#input-start-date").DatePickerSetDate($("#input-start-date").val(), true);
+                        }
+                },
                     onChange: function (date, element) {
-                        var dateString = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-                        $('input[name="start"]').val(dateString);
+                        $(element).val(ConvertDate(date));
+                        $(element).DatePickerHide();
                     }
                 });
 
-                $('#datepicker-end').DatePicker({
-                    mode: 'single',
-                    inline: true,
-                    date: new Date(),
+                $('#input-end-date').DatePicker({
+                    mode: "single",
+                    // inline: true,
+                    position: "bottom",
+                    onBeforeShow: function (element) {
+                        if($("#input-start-date").val()){
+                            $("#input-start-date").DatePickerSetDate($("#input-start-date").val(), true);
+                        }
+                },
                     onChange: function (date, element) {
-                        var dateString = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
-                        $('input[name="end"]').val(dateString);
+                        $(element).val(ConvertDate(date));
+                        $(element).DatePickerHide();
                     }
                 });
+
             //输出metric和dimension
                 var gaJSONItems = gaJSON.items;
                 var dimensionItems = [];
