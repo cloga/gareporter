@@ -21,8 +21,8 @@ import tempfile
 
 client_id = '239823730922-72pfrs8hjs640ptrb1kecinogffhhdh9.apps.googleusercontent.com'  # 请替换为你的Client_id
 client_secret = '1fhPtLWXGjp9qgzAib28SThi'  # 请替换为你的Client_secret
-redirect_uri = 'http://gareport.cloga.info/oauth2callback'
-# redirect_uri = 'http://127.0.0.1:5000/oauth2callback'
+# redirect_uri = 'http://gareport.cloga.info/oauth2callback'
+redirect_uri = 'http://127.0.0.1:5000/oauth2callback'
 auth_server = 'https://accounts.google.com/o/oauth2/auth'
 token_uri = 'https://accounts.google.com/o/oauth2/token'
 scope = 'https://www.googleapis.com/auth/analytics.readonly'
@@ -106,7 +106,7 @@ def query():
             '&dimensions=' + str(dimensions) +\
             '&max-results=' + '10000'   
         url = data_uri + '?' + args
-        # url = 'http://cloga.info/files/ga.json'
+        return url
         content = json.loads(urllib2.urlopen(url).read())
         columns = [i['name'] for i in content['columnHeaders']]
         dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
