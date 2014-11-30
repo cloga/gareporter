@@ -33,10 +33,6 @@ mcf_uri = 'https://www.googleapis.com/analytics/v3/data/mcf'
 
 dtype_mapping = {u'CURRENCY':'object', u'FLOAT' : float, u'INTEGER' : int, u'PERCENT' : float, u'STRING' : str, u'TIME': 'object'} 
 
-# proxy = httplib2.ProxyInfo(3, '127.0.0.1', 8087)
-# http = httplib2.Http(
-    # proxy_info=proxy, disable_ssl_certificate_validation=True)
-
 http = httplib2.Http(disable_ssl_certificate_validation=True)
 
 # url = 'https://www.googleapis.com/analytics/v3/data/ga?access_token=ya29.wwAl_oJqu37-d_ytQcGj-RtgANH1DAKshqai-bGFyTXlt8JrvJGZnjl-P2FXxFzF3_Z8eRoJtVkB9A&ids=ga:36050032&start-date=2014-01-01&end-date=2014-11-01&metrics=ga:pageviews,ga:sessions&dimensions=ga:source,ga:medium&max-results=10000'
