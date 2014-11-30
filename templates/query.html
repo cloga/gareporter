@@ -19,12 +19,12 @@
                 <h1>GA Reporter<span class="subtitle"><small>Export GA Data from remote server.</small></span></h1>
                 <h2>构建你需要的GA报告</h2>
             </div>
+            <p>Token: {{results['token']}}</p>
             <div class="tip-box">
                 <img class="img-box" src="../static/img/viewid.png" /></br>
             </div>
             <div class="form-group">
                 <form role="form" method="POST" action="/query">
-                    <p>Token: {{results['token']}}</p>
                     <label for="view_id">ViewID: (如图)</label>
                     <input type="text" name="view_id" class="form-control short-text-box" id="view_id" placeholder="输入View ID" />
                     <div class="select-date-div start-date">
@@ -219,7 +219,7 @@
 
 
             });
-        </script>>
+        </script>
 
     </body>
 </html>
