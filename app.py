@@ -117,12 +117,12 @@ def query():
                     content0 = json.loads(urllib2.urlopen(url0).read())
                     rows += content0['rows']
         df = pd.DataFrame(rows, columns=columns)
-        return url
         for c in df.columns:
             df[c] = df[c].astype(dtypes[c])
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         # df.to_excel('static/files/xlsx_file.xlsx', index=False)
         df.to_excel(xlsx_file.name, index=False)
+        return url
         results['file_path'] = file_path
         results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
         return render_template('report.html', errors=errors, results=results)  
