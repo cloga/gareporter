@@ -114,7 +114,6 @@ def query():
                     url0 = url + '&start-index=' + str(i * 10000) + str(1)
                     content0 = json.loads(urllib2.urlopen(url0).read())
                     rows += content0['rows']
-        return url
         df = pd.DataFrame(rows, columns=columns)
         for c in df.columns:
             df[c] = df[c].astype(dtypes[c])
