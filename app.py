@@ -11,7 +11,7 @@ import urllib2
 import httplib2
 import json
 import pandas as pd
-import tempfile
+import datetime
 
 ##Google Oauth
 # 需增加token持久化及刷新的机制
@@ -115,12 +115,11 @@ def query():
         df = pd.DataFrame(rows, columns=columns)
         for c in df.columns:
             df[c] = df[c].astype(dtypes[c])
-        xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         # df.to_excel('static/files/xlsx_file.xlsx', index=False)
-        return redirect_uri
-        df.to_excel(xlsx_file.name, index=False)
+        xlsx_file = str(datetime.datetime.now()) + '.xlsx'
+        df.to_excel(file_path + xlsx_file, index=False)
         results['file_path'] = file_path
-        results['xlsx_file'] = os.path.split(xlsx_file.name)[1]
+        results['xlsx_file'] = xlsx_file
         return render_template('report.html', errors=errors, results=results)  
     return render_template('query.html', errors=errors, results=results)
 #Session Secret Key
