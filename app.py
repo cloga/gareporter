@@ -105,11 +105,11 @@ def query():
             '&max-results=' + '10000'   
         url = data_uri + '?' + args
         content = json.loads(urllib2.urlopen(url).read())
+        return url
         columns = [i['name'] for i in content['columnHeaders']]
         dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
         pages = content['totalResults'] / 10000 + 1 if content['totalResults'] / 10000 != content['totalResults'] / 10000.0 else content['totalResults'] / 10000
         rows = content['rows']
-        return url
         if pages >= 2:
             for i in range(2, pages):
                     url0 = url + '&start-index=' + str(i * 10000) + str(1)
