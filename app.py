@@ -6,13 +6,11 @@ from flask import redirect
 from flask import session
 from flask import url_for
 import os
-import collections
 import urllib
 import urllib2
 import httplib2
 import json
 import pandas as pd
-import sys
 import tempfile
 
 ##Google Oauth
