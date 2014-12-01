@@ -115,6 +115,7 @@ def query():
         df = pd.DataFrame(rows, columns=columns)
         for c in df.columns:
             df[c] = df[c].astype(dtypes[c])
+        return redirect_uri
         xlsx_file = tempfile.NamedTemporaryFile(dir=file_path, mode='w+b', suffix='.xlsx', delete=False)
         # df.to_excel('static/files/xlsx_file.xlsx', index=False)
         df.to_excel(xlsx_file.name, index=False)
