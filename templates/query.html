@@ -62,6 +62,45 @@
                     <label for="filters">filter:</label>
                     <input type="text" name="filters" class="form-control long-text-box" id="filters" placeholder="输入filters" />
                     <input type="submit" class="btn btn-default" value="提交" />
+                    <table id="custom-metrics">
+                        <thead>
+                            <tr>
+                                <th>Dimensions</th>
+                                <th>Condition</th>
+                                <th>Value</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="dimensions-td">
+                                    <select>
+                                        
+                                    </select>
+                                </td>
+                                <td class="condition-td">
+                                    <select>
+                                        <option>Match</option>
+                                        <option>Not Match</option>
+                                    </select>
+                                    <select>
+                                        <option>Starts With</option>
+                                        <option>Ends With</option>
+                                        <option>Contains</option>
+                                        <option>Match Regex</option>
+                                    </select>
+                                </td>
+                                <td class="value-td"><input type="text" /></td>
+                                <td class="action-td"><a href="javascript:void(0);" class="delete-btn">Delete</a></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td><a href="javascript:void(0);" class="add-btn">Add</a></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
             </div>
             {% for error in errors %}
             <h4>{{ error }}</h4>
@@ -116,6 +155,10 @@
             function ConvertDate(date) {
                 return date.getFullYear() + "-" + AppendZero((date.getMonth() + 1)) + "-" + AppendZero(date.getDate());
             }
+            //获取下拉框选项htmlstr方法
+            function GetOptionsHTML(items) {
+                    return;
+            }
             $( function () {
                 //为start&end text box 赋值当天的日期
                 var today = new Date();
@@ -155,10 +198,7 @@
                 var gaJSONItems = gaJSON.items;
                 var dimensionItems = [];
                 var metricItems = [];
-                // //定义排序函数
-                // function sortByItemUIName(a, b){
-                //     return a.attributes.uiName - b.attributes.uiName;
-                // }
+                
                 //将gaJson中的items分拆成Metris和Dimensions两个数组
                 $.each(gaJSONItems, function (index, item) {
                     if (item.attributes.type == "DIMENSION" && item.attributes.status == "PUBLIC"){
@@ -167,17 +207,19 @@
                         metricItems.push(item);
                     }
                 });
-                $.each(metricItems, function (index, item) {
+                $.each(metricItems.sort(function(a,b){return a.attributes.uiName.localeCompare(b.attributes.uiName)}), function (index, item) {
                     var id = item.id;
                     var uiName = item.attributes.uiName;
                     var checkBoxHtml = '<option value="'+ id + '">' + uiName + '</option>';
                     $("#metrics-selected").append(checkBoxHtml);
+                    $("#custom-metrics").find(".metrics-td>select").append(checkBoxHtml);
                 });
-                $.each(dimensionItems, function (index, item) {
+                $.each(dimensionItems.sort(function(a,b){return a.attributes.uiName.localeCompare(b.attributes.uiName)}), function (index, item) {
                     var id = item.id;
                     var uiName = item.attributes.uiName;
                     var checkBoxHtml = '<option value="'+ id + '">' + uiName + '</option>';
                     $("#dimensions-selected").append(checkBoxHtml);
+                    $("#custom-metrics").find(".dimensions-td>select").append(checkBoxHtml);
                 });
                 //将选中的值存入数组并写入hidden input的value以便提交form
                 var sltMtxs = [];
@@ -217,6 +259,13 @@
                     $('input[name="dimensions"]').val("");
                 });
 
+                $(".delete-btn").click(function () {
+                    $(this).parent().parent().remove();
+                });
+                $(".add-btn").click(function () {
+                    var firtRow = $("#custom-metrics tbody tr")[0];
+                    $("#custom-metrics tbody").append($(firtRow).clone(true));
+                });
 
             });
         </script>
