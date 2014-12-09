@@ -77,45 +77,70 @@ def get_token():
     # return redirect('http://gareport.cloga.info/query')
     return redirect(url_for('query'))
 
+def get_data(args):
+    url = data_uri + '?' + args
+    content = json.loads(urllib2.urlopen(url).read())
+    columns = [i['name'] for i in content['columnHeaders']]
+    dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
+    pages = content['totalResults'] / 10000 + 1 if content['totalResults'] / 10000 != content['totalResults'] / 10000.0 else content['totalResults'] / 10000
+    rows = content.get('rows', [])
+    if not rows:
+        return pd.DataFrame()
+    if pages >= 2:
+        for i in range(2, pages):
+                url0 = url + '&start-index=' + str(i * 10000) + str(1)
+                content0 = json.loads(urllib2.urlopen(url0).read())
+                rows += content0['rows']
+    df = pd.DataFrame(rows, columns=columns)
+    for c in df.columns:
+        df[c] = df[c].astype(dtypes[c])
+    return df
+
 @app.route('/query', methods=['GET', 'POST'])
 def query():
     file_path = 'static/files/'
     errors = []
     results = {}
     results['token'] = session['ga_token']
-    # results['token'] = 'ya29.wQBVF5t-NeQz1Em9w9SiWeb-HK6soxRewQdr0dUh-nOrwcveYkFNxvCLTQJ3jsps5x8kOSbdpmH15A'
     if request.method == "POST":
         access_token = session['ga_token']
-        # access_token = ' ya29.wQAk9XheM6W_28ODMFFh9_yyMMkY4G6eI4d0Vx7kHbXABWdbTNxaDKHkeJxPdP2cuXerwQxmsf_dqw'
         profile_id = 'ga:' + request.form['view_id']
         start = request.form['start']
         end = request.form['end']
         metrics = request.form['metrics']
         dimensions = request.form['dimensions']
         # filters = request.form['filters']
-        # profile_id = 'ga:XXXX'  # 要查询数据的Profile_id
         args = 'access_token=' + str(access_token) +\
             '&ids=' + str(profile_id) +\
             '&start-date=' + str(start) +\
             '&end-date=' + str(end) +\
             '&metrics=' + str(metrics) +\
             '&dimensions=' + str(dimensions) +\
-            '&max-results=' + '10000'   
-        url = data_uri + '?' + args
-        content = json.loads(urllib2.urlopen(url).read())
-        columns = [i['name'] for i in content['columnHeaders']]
-        dtypes = {i['name']:dtype_mapping.get(i['dataType'], None) for i in content['columnHeaders']}
-        pages = content['totalResults'] / 10000 + 1 if content['totalResults'] / 10000 != content['totalResults'] / 10000.0 else content['totalResults'] / 10000
-        rows = content['rows']
-        if pages >= 2:
-            for i in range(2, pages):
-                    url0 = url + '&start-index=' + str(i * 10000) + str(1)
-                    content0 = json.loads(urllib2.urlopen(url0).read())
-                    rows += content0['rows']
-        df = pd.DataFrame(rows, columns=columns)
-        for c in df.columns:
-            df[c] = df[c].astype(dtypes[c])
-        # df.to_excel('static/files/xlsx_file.xlsx', index=False)
+            '&max-results=' + '10000'
+        df = get_data(args)
+        c_names = request.form.getlist('c_names')
+        condition_include = request.form.getlist('condition_include')
+        c_dimensions = request.form.getlist('c_dimensions')
+        operators = request.form.getlist('operators')
+        expressions = request.form.getlist('expressions')
+        c_metrics = request.form.getlist('c_metrics')
+        for i in range(len(c_names)):
+            custom_metrics_name = c_names[0]
+            c_args = 'access_token=' + str(access_token) +\
+            '&ids=' + str(profile_id) +\
+            '&start-date=' + str(start) +\
+            '&end-date=' + str(end) +\
+            '&metrics=' + str(c_metrics[i]) +\
+            '&dimensions=' + str(dimensions) +\
+            '&max-results=' + '10000' +\
+            '&filters=' + str(c_dimensions[i]) + urllib.quote_plus(operators[i] + str(expressions[i]))
+            df_c = get_data(c_args)
+            if not len(df_c):
+                df[c_names[0]] = 0
+                continue
+            df_c[custom_metrics_name] = df_c[c_metrics[i]]
+            df_c.drop(c_metrics[i], inplace=True, axis=1)
+            df = pd.merge(df, df_c, how='left', on=dimensions.split(','))
         xlsx_file = str(datetime.datetime.now()) + '.xlsx'
         df.to_excel(file_path + xlsx_file, index=False)
         results['file_path'] = file_path

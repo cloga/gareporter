@@ -24,7 +24,7 @@
                 <img class="img-box" src="../static/img/viewid.png" /></br>
             </div>
             <div class="form-group">
-                <form role="form" method="POST" action="/query">
+                <form role="form" method="POST" action="/query" onsubmit="return Check();">
                     <label for="view_id">ViewID: (如图)</label>
                     <input type="text" name="view_id" class="form-control short-text-box" id="view_id" placeholder="输入View ID" />
                     <div class="select-date-div start-date">
@@ -65,32 +65,49 @@
                     <table id="custom-metrics">
                         <thead>
                             <tr>
+                                <th>Custom Metric Name</th>
+                                <th></th>
                                 <th>Dimensions</th>
-                                <th>Condition</th>
-                                <th>Value</th>
+                                <th>Operator</th>
+                                <th>Expression</th>
+                                <th>Metrics</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td class="name-td"><input type="text" value='test' name='c_names'/></td>
+                                <td class="condition-td">
+                                    <select  name='condition_include' value='Include'>
+                                        <option>Include</option>
+                                        <option>Not Include</option>
+                                    </select>
+
                                 <td class="dimensions-td">
-                                    <select>
+                                    <select value='Event Action' name='c_dimensions'>
                                         
                                     </select>
                                 </td>
                                 <td class="condition-td">
-                                    <select>
+<!--                                     <select  name='condition_include'>
                                         <option>Match</option>
                                         <option>Not Match</option>
                                     </select>
-                                    <select>
-                                        <option>Starts With</option>
-                                        <option>Ends With</option>
-                                        <option>Contains</option>
-                                        <option>Match Regex</option>
+ -->                                    <select name='operators' value='=='>
+                                        <option>==</option>
+                                        <option>!=</option>
+                                        <option>=@</option>
+                                        <option>!@</option>
+                                        <option>=~</option>
+                                        <option>!~</option>
                                     </select>
                                 </td>
-                                <td class="value-td"><input type="text" /></td>
+                                <td class="value-td"><input type="text" value='http://gareport.cloga.info/oauth' name='expressions'/></td>
+                                <td class="metrics-td">
+                                    <select value='ga:pageviews' name='c_metrics'>
+                                        
+                                    </select>
+                                </td>
                                 <td class="action-td"><a href="javascript:void(0);" class="delete-btn">Delete</a></td>
                             </tr>
                         </tbody>
@@ -100,7 +117,7 @@
                             </tr>
                         </tfoot>
                     </table>
-
+                </form>
             </div>
             {% for error in errors %}
             <h4>{{ error }}</h4>
@@ -268,6 +285,16 @@
                 });
 
             });
+
+        function Check()
+            {
+             if(document.getElementById('view_id').value=='') {
+              alert('ViewID不能为空！');
+              document.getElementById('view_id').focus();
+              return false;
+             }
+             return true;
+            }
         </script>
 
     </body>
